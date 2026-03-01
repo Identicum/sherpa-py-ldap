@@ -1,0 +1,45 @@
+name: sherpa-py-ldap
+
+secrets:
+    samba-admin-password:
+        file: ./samba_admin.password
+
+services:
+    samba:
+        container_name: samba
+        hostname: dc1
+        image: ghcr.io/identicum/samba-dc:latest
+        pull_policy: always
+        restart: always
+        cap_add:
+            - SYS_ADMIN
+        environment:
+            LOG_LEVEL: 3
+            NETBIOS_NAME: dc1
+            DOMAIN: IDSHERPA
+            WORKGROUP: IDSHERPA
+            REALM: "idsherpa.com"
+            DOMAIN_ACTION: provision
+            DNS_FORWARDER: 127.0.0.11
+        secrets:
+            - samba-admin-password
+        ports:
+            - 389:389
+            - 636:636
+        volumes:
+            - ./samba.conf:/etc/samba/conf.d/0global.conf
+        networks:
+            default:
+                aliases:
+                    - dc1.idsherpa.com
+
+    sherpa:
+        container_name: sherpa
+        image: ghcr.io/identicum/sherpa-deploy:latest
+        pull_policy: always
+        restart: always
+        volumes:
+            - ../:/usr/home/
+        depends_on:
+            samba:
+                condition: service_started
