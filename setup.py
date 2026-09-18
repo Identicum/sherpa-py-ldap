@@ -9,7 +9,7 @@ from setuptools import setup
 
 setup(
     name='sherpa-py-ldap',
-    version='1.1.1',
+    version='1.1.2',
     description='Python LDAP utilities',
     url='git@github.com:Identicum/sherpa-py-ldap.git',
     author='Identicum',
