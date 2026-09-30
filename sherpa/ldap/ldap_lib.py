@@ -138,7 +138,7 @@ class LDAP(object):
             raise
 
 
-    def create_ad_user(self, base_dn: str, username: str, password: str, upn: str, given_name: str = "", last_name: str = "", mail: str = "", employee_id: str = "", title: str = "", department: str = "", employee_type: str = "", location: str = "", postal_code: str = "", telephone_number: str = "", street_address: str = "", ignore_if_exists: bool = False):
+    def create_ad_user(self, base_dn: str, username: str, password: str, upn: str, given_name: str = "", last_name: str = "", mail: str = "", employee_id: str = "", title: str = "", department: str = "", employee_type: str = "", location: str = "", state: str = "", postal_code: str = "", telephone_number: str = "", street_address: str = "", ignore_if_exists: bool = False):
         if not self.check_object_exists(base_dn):
             validators.raise_and_log(self._logger, ValueError, "base_dn: {} does not exist".format(base_dn))
         try:
@@ -167,6 +167,8 @@ class LDAP(object):
                 attrs['l'] = [location.encode()]
             if postal_code:
                 attrs['postalCode'] = [postal_code.encode()]
+            if state:
+                attrs['st'] = [state.encode()]
             if telephone_number:
                 attrs['telephoneNumber'] = [telephone_number.encode()]
             if street_address:
