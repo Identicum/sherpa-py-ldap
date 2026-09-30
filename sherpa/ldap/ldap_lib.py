@@ -138,7 +138,7 @@ class LDAP(object):
             raise
 
 
-    def create_ad_user(self, base_dn: str, username: str, password: str, upn: str, given_name: str, last_name: str, employee_id: str = "", title: str = "", department: str = "", employee_type: str = "", location: str = "", postal_code: str = "", telephone_number: str = "", street_address: str = "", ignore_if_exists: bool = False):
+    def create_ad_user(self, base_dn: str, username: str, password: str, upn: str, given_name: str = "", last_name: str = "", mail: str = "", employee_id: str = "", title: str = "", department: str = "", employee_type: str = "", location: str = "", postal_code: str = "", telephone_number: str = "", street_address: str = "", ignore_if_exists: bool = False):
         if not self.check_object_exists(base_dn):
             validators.raise_and_log(self._logger, ValueError, "base_dn: {} does not exist".format(base_dn))
         try:
@@ -149,8 +149,12 @@ class LDAP(object):
             attrs['userAccountControl'] = ["512".encode()]
             attrs['sAMAccountName'] = [username.encode()]
             attrs['userPrincipalName'] = [upn.encode()]
-            attrs['givenName'] = [given_name.encode()]
-            attrs['sn'] = [last_name.encode()]
+            if given_name:
+                attrs['givenName'] = [given_name.encode()]
+            if last_name:
+                attrs['sn'] = [last_name.encode()]
+            if mail:
+                attrs['mail'] = [mail.encode()]
             if employee_id:
                 attrs['employeeID'] = [employee_id.encode()]
             if title:
